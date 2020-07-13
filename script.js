@@ -1,26 +1,19 @@
 //function definitions
 function add(op1, op2) {
     return op1 + op2;
-};
+}
 
 function subtract(op1, op2) {
     return op1 - op2;
-};
+}
 
 function multiply(op1, op2) {
     return op1 * op2;
-};
+}
 
 function divide(op1, op2) {
     return op1 / op2;
-};
-
-function Operate(op1, op2, operator) {
-    if(operator == '+') add(op1, op2);
-    if(operator == '-') subtract(op1, op2);
-    if(operator == '*') multiply(op1, op2);
-    if(operator == '/') divide(op1, op2);
-};
+}
 
 function num(number) {
     document.getElementById(`${number}`).onclick = function() {
@@ -30,7 +23,7 @@ function num(number) {
     }   
 }
 
-function digits() {
+function mapDigits() {
     for(let i = 0; i <= 9; i++) {
         num(i);
     }
@@ -38,13 +31,13 @@ function digits() {
 
 function makeNum(array) { //array of digits to number
         let pow = 0;
-        let temp = 0;
+        let num = 0;
         let i = array.length;
         while(i--) {
-            temp += (array[i])*(Math.pow(10, pow));
+            num += (array[i])*(Math.pow(10, pow));
             pow++;
         }
-        return temp;
+        return num;
 }
 
 function operate(operator) {
@@ -60,47 +53,88 @@ function operate(operator) {
     }  
 } 
 
+function mapOperators() {
+    operate('+');
+    operate('-');
+    operate('*');
+    operate('/');
+}
+
 function result() {
     document.getElementById("=").onclick = function() {
         let num = makeNum(digitsArray); console.log(num); 
         numberArray.push(num); console.log(numberArray);
-        for(let i = 0; i < operatorsArray.length; i++) {
-            if(operatorsArray[i] == '+') {
-                finalResult = add(numberArray[i], numberArray[i+1]);
-                console.log(finalResult);
-            }
-            if(operatorsArray[i] == '-') {
-                finalResult = subtract(numberArray[i], numberArray[i+1]);
-                console.log(finalResult);
-            }
-            if(operatorsArray[i] == '*') {
-                finalResult = multiply(numberArray[i], numberArray[i+1]);
-                console.log(finalResult);
-            }
-            if(operatorsArray[i] == '/') {
-                finalResult = multiply(numberArray[i], numberArray[i+1]);
-                console.log(finalResult);
-            }
-        }
+
+        let finalResult = evaluation(operatorsArray, numberArray);
         document.getElementById("output").innerText = finalResult;
     }
 }
 
+function evaluation(opArray, numArray) { //operator array
+    let arr = []; //array to keep ranks on precedence 
+    let result;
+    let maxIndex;
+    
+    let i = 0;
+    while(i < opArray.length) { //precedence ranking
+        if(opArray[i] =='/') {
+            arr[i] = 4;
+        }
+        if(opArray[i] =='*') {
+            arr[i] = 3;
+        }
+        if(opArray[i] =='+') {
+            arr[i] = 2;
+        }
+        if(opArray[i] =='-') {
+            arr[i] = 1;
+        }
+        i++;
+    }
+    console.log(opArray); console.log(arr);
+
+    while(opArray.length > 0) {
+        let max = 0;
+        let j = 0;
+        while(j < arr.length) {
+            if(arr[j] > max) {
+                max = arr[j];
+                maxIndex = j;
+            }
+            j++;
+        }
+        arr.splice(maxIndex, 1); console.log(arr); console.log(max);
+
+        if(max == 4) {
+            result = divide(numArray[maxIndex], numArray[maxIndex+1]);
+        }
+        if(max == 3) {
+            result = multiply(numArray[maxIndex], numArray[maxIndex+1]);
+        }
+        if(max == 2) {
+            result = add(numArray[maxIndex], numArray[maxIndex+1]);
+        }
+        if(max == 1) {
+            result = subtract(numArray[maxIndex], numArray[maxIndex+1]);
+        }
+
+        let newArr = numArray.splice(maxIndex, 2, result); console.log(newArr); console.log(numArray);
+        let removed = opArray.splice(maxIndex, 1); console.log(removed); console.log(opArray);
+    }
+
+    console.log(opArray.length);
+    
+    return result;
+}
+
 //MAIN BODY
 let output = []; //only needed for display
-let finalOutput = [];
 let digitsArray = [];
 let operatorsArray = [];
 let numberArray = [];
 let finalResult;
 
-digits();
-
-let position = 0 //position to keep track of output array
-
-operate('+');
-operate('-');
-operate('*');
-operate('/');
+mapDigits();
+mapOperators();
 
 result();
