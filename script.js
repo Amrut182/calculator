@@ -66,10 +66,22 @@ function clear() {
         digitsArray = [];
         operatorsArray = [];
         numberArray = [];
-        document.getElementById("output").innerText = output.join('');
+        document.getElementById("output").innerText = "____________";
     }
 }
 
+function backspace() {
+    document.getElementById("backspace").onclick = function() {
+        let op = output.pop();
+        if(op >= 0 && op <= 9) {
+            digitsArray.pop();
+            numberArray.pop();
+        } else {
+            operatorsArray.pop();
+        }
+        document.getElementById("output").innerText = output.join('');
+    }
+}
 function result() {
     document.getElementById("=").onclick = function() {
         let num = makeNum(digitsArray); console.log(num); 
@@ -147,5 +159,6 @@ let finalResult;
 mapDigits();
 mapOperators();
 clear();
+backspace();    
 
 result();
