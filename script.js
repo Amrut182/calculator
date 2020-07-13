@@ -60,6 +60,16 @@ function mapOperators() {
     operate('/');
 }
 
+function clear() {
+    document.getElementById("clear").onclick = function() {
+        output = [];
+        digitsArray = [];
+        operatorsArray = [];
+        numberArray = [];
+        document.getElementById("output").innerText = output.join('');
+    }
+}
+
 function result() {
     document.getElementById("=").onclick = function() {
         let num = makeNum(digitsArray); console.log(num); 
@@ -70,7 +80,7 @@ function result() {
     }
 }
 
-function evaluation(opArray, numArray) { //operator array
+function evaluation(opArray, numArray) { //calculator main logic
     let arr = []; //array to keep ranks on precedence 
     let result;
     let maxIndex;
@@ -136,5 +146,6 @@ let finalResult;
 
 mapDigits();
 mapOperators();
+clear();
 
 result();
