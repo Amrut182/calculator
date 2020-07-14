@@ -17,6 +17,11 @@ function divide(op1, op2) {
 
 function mapDigit(number) { //mapping each digit to a button
     document.getElementById(`${number}`).onclick = function() {
+        if(evaluated) {
+           clear(); 
+           evaluated = false; 
+        }
+
         output.push(number);
         digitsArray.push(number);
 
@@ -112,22 +117,6 @@ function divideZero() {
     return false;
 }
 
-function result() {
-    document.getElementById("=").onclick = function() {
-        convertToNum();
-
-        if(!divideZero()) {
-            let finalResult = evaluation(operatorsArray, numberArray);
-
-            if(!Number.isInteger(finalResult)) {
-                finalResult = finalResult.toFixed(2);
-            }
-
-            document.getElementById("output").innerText = finalResult;  
-        }
-    }
-}
-
 function precedenceRanker(opArray, arr) {//creating another array to keep ranks of operators
     let i = 0; 
     while(i < opArray.length) { //precedence ranking
@@ -190,12 +179,32 @@ function evaluation(opArray, numArray) { //calculator main logic
     return result;
 }
 
+function result() {
+    document.getElementById("=").onclick = function() {
+        convertToNum();
+
+        if(!divideZero()) {
+            let finalResult = evaluation(operatorsArray, numberArray);
+
+            if(!Number.isInteger(finalResult)) {
+                finalResult = finalResult.toFixed(2);
+            }
+
+            document.getElementById("output").innerText = finalResult;  
+            evaluated = true; //since expression has been evaluated
+        }
+    }
+}
+
+
+
 //MAIN BODY
 let output = []; //only needed for display
 let digitsArray = [];
 let operatorsArray = [];
 let numberArray = [];
 let finalResult;
+let evaluated = false; //if expression has been evaluated or not
 
 mapAllDigits();
 mapAllOperators();
