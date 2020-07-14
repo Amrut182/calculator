@@ -15,73 +15,71 @@ function divide(op1, op2) {
     return op1 / op2;
 }
 
-function num(number) {
+function mapDigit(number) { //mapping each digit to a button
     document.getElementById(`${number}`).onclick = function() {
         output.push(number);
         digitsArray.push(number);
+
         document.getElementById("output").innerText = output.join('');
     }   
 }
 
-function mapDigits() {
+function mapAllDigits() { //mapping digits 0-9 to buttons
     for(let i = 0; i <= 9; i++) {
-        num(i);
+        mapDigit(i);
     }
 }
 
-function makeNum(array) { //array of digits to number
+function makeNum(array) { //array of digits to number (converting digits up till operator to number)
         let pow = 0;
         let num = 0;
         let i = array.length;
+
         while(i--) {
             num += (array[i])*(Math.pow(10, pow));
             pow++;
         }
+
         return num;
 }
 
-function operate(operator) {
+function convertToNum() {
+    let num = makeNum(digitsArray); console.log("number", num); 
+    numberArray.push(num); console.log("numberArray", numberArray); 
+}
+
+function mapOperator(operator) {
     document.getElementById(`${operator}`).onclick = function() {
         output.push(operator);
 
         operatorsArray.push(operator); console.log("opArray", operatorsArray);
-        let num = makeNum(digitsArray); console.log("number", num); 
-        numberArray.push(num); console.log("numberArray", numberArray);
-        digitsArray = [];
+        convertToNum();
+        digitsArray = []; //clearing digits array 
 
         document.getElementById("output").innerText = output.join('');
     }  
 } 
 
-function mapOperators() {
-    operate('+');
-    operate('-');
-    operate('*');
-    operate('/');
+function mapAllOperators() {
+    mapOperator('+');
+    mapOperator('-');
+    mapOperator('*');
+    mapOperator('/');
 }
 
 function clear() {
-    document.getElementById("clear").onclick = function() {
-        output = [];
-        digitsArray = [];
-        operatorsArray = [];
-        numberArray = [];
-        document.getElementById("output").innerText = "____________";
-    }
+    output = [];
+    digitsArray = [];
+    operatorsArray = [];
+    numberArray = [];
+
+    document.getElementById("output").innerText = "____________";
 }
 
-// function backspace() {
-//     document.getElementById("backspace").onclick = function() {
-//         let op = output.pop();
-//         if(op >= 0 && op <= 9) {
-//             digitsArray.pop();
-//             numberArray.pop();
-//         } else {
-//             operatorsArray.pop();
-//         }
-//         document.getElementById("output").innerText = output.join('');
-//     }
-// }
+document.getElementById("clear").onclick = function() {
+    clear();
+}
+
 function divideZero() {
     let zeroIndex = -1;
     let divisionIndex = -1;
@@ -105,39 +103,36 @@ function divideZero() {
     console.log("divisionIndex", divisionIndex);
 
     if((zeroIndex - 1) == divisionIndex) {
-        console.log("divisionbyzero");
-        output = [];
-        digitsArray = [];
-        operatorsArray = [];
-        numberArray = [];
-        document.getElementById("output").innerText = "____________";
+        console.log("division by zero");
+        clear();
         alert("Division by zero! please enter again");
         return true;
     }
+
     return false;
 }
 
 function result() {
     document.getElementById("=").onclick = function() {
-        let num = makeNum(digitsArray); console.log("num", num); 
-        numberArray.push(num); console.log("numArray", numberArray);
+        convertToNum();
+
         if(!divideZero()) {
             let finalResult = evaluation(operatorsArray, numberArray);
-            document.getElementById("output").innerText = finalResult;    
+
+            if(!Number.isInteger(finalResult)) {
+                finalResult = finalResult.toFixed(2);
+            }
+
+            document.getElementById("output").innerText = finalResult;  
         }
     }
 }
 
-
-function evaluation(opArray, numArray) { //calculator main logic
-    let arr = []; //array to keep ranks on precedence 
-    let result;
-    let maxIndex;
-    
-    let i = 0;
+function precedenceRanker(opArray, arr) {//creating another array to keep ranks of operators
+    let i = 0; 
     while(i < opArray.length) { //precedence ranking
-        if(opArray[i] =='/') {
-            arr[i] = 4;
+        if(opArray[i] =='/') { 
+            arr[i] = 4; //highest priority
         }
         if(opArray[i] =='*') {
             arr[i] = 3;
@@ -146,18 +141,27 @@ function evaluation(opArray, numArray) { //calculator main logic
             arr[i] = 2;
         }
         if(opArray[i] =='-') {
-            arr[i] = 1;
+            arr[i] = 1; //lowest priority
         }
         i++;
     }
     console.log("opArray", opArray); console.log("precendence ranks", arr);
+}
 
+function evaluation(opArray, numArray) { //calculator main logic
+    let arr = []; //array to keep ranks on precedence 
+    let result;
+    let maxIndex; //index of operator with highest priority
+    
+    precedenceRanker(opArray, arr);
+    
     while(opArray.length > 0) {
         let max = 0;
+
         let j = 0;
-        while(j < arr.length) {
+        while(j < arr.length) { 
             if(arr[j] > max) {
-                max = arr[j];
+                max = arr[j]; 
                 maxIndex = j;
             }
             j++;
@@ -193,10 +197,7 @@ let operatorsArray = [];
 let numberArray = [];
 let finalResult;
 
-mapDigits();
-mapOperators();
-clear();
-// divideZero();
-// backspace();    
+mapAllDigits();
+mapAllOperators();
 
 result();
