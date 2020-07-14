@@ -44,9 +44,9 @@ function operate(operator) {
     document.getElementById(`${operator}`).onclick = function() {
         output.push(operator);
 
-        operatorsArray.push(operator); console.log(operatorsArray);
-        let num = makeNum(digitsArray); console.log(num); 
-        numberArray.push(num); console.log(numberArray);
+        operatorsArray.push(operator); console.log("opArray", operatorsArray);
+        let num = makeNum(digitsArray); console.log("number", num); 
+        numberArray.push(num); console.log("numberArray", numberArray);
         digitsArray = [];
 
         document.getElementById("output").innerText = output.join('');
@@ -70,27 +70,64 @@ function clear() {
     }
 }
 
-function backspace() {
-    document.getElementById("backspace").onclick = function() {
-        let op = output.pop();
-        if(op >= 0 && op <= 9) {
-            digitsArray.pop();
-            numberArray.pop();
-        } else {
-            operatorsArray.pop();
+// function backspace() {
+//     document.getElementById("backspace").onclick = function() {
+//         let op = output.pop();
+//         if(op >= 0 && op <= 9) {
+//             digitsArray.pop();
+//             numberArray.pop();
+//         } else {
+//             operatorsArray.pop();
+//         }
+//         document.getElementById("output").innerText = output.join('');
+//     }
+// }
+function divideZero() {
+    let zeroIndex = -1;
+    let divisionIndex = -1;
+
+    let i = 0;
+    while(i < numberArray.length) {
+        if(numberArray[i] == '0') {
+            zeroIndex = i;
         }
-        document.getElementById("output").innerText = output.join('');
+        i++;
     }
+    console.log("zeroIndex", zeroIndex);
+
+    i = 0;
+    while(i < operatorsArray.length) {
+        if(operatorsArray[i] == '/') {
+            divisionIndex = i;
+        }
+        i++;
+    }
+    console.log("divisionIndex", divisionIndex);
+
+    if((zeroIndex - 1) == divisionIndex) {
+        console.log("divisionbyzero");
+        output = [];
+        digitsArray = [];
+        operatorsArray = [];
+        numberArray = [];
+        document.getElementById("output").innerText = "____________";
+        alert("Division by zero! please enter again");
+        return true;
+    }
+    return false;
 }
+
 function result() {
     document.getElementById("=").onclick = function() {
-        let num = makeNum(digitsArray); console.log(num); 
-        numberArray.push(num); console.log(numberArray);
-
-        let finalResult = evaluation(operatorsArray, numberArray);
-        document.getElementById("output").innerText = finalResult;
+        let num = makeNum(digitsArray); console.log("num", num); 
+        numberArray.push(num); console.log("numArray", numberArray);
+        if(!divideZero()) {
+            let finalResult = evaluation(operatorsArray, numberArray);
+            document.getElementById("output").innerText = finalResult;    
+        }
     }
 }
+
 
 function evaluation(opArray, numArray) { //calculator main logic
     let arr = []; //array to keep ranks on precedence 
@@ -113,7 +150,7 @@ function evaluation(opArray, numArray) { //calculator main logic
         }
         i++;
     }
-    console.log(opArray); console.log(arr);
+    console.log("opArray", opArray); console.log("precendence ranks", arr);
 
     while(opArray.length > 0) {
         let max = 0;
@@ -125,7 +162,7 @@ function evaluation(opArray, numArray) { //calculator main logic
             }
             j++;
         }
-        arr.splice(maxIndex, 1); console.log(arr); console.log(max);
+        arr.splice(maxIndex, 1); console.log("rank array", arr); console.log("max rank", max);
 
         if(max == 4) {
             result = divide(numArray[maxIndex], numArray[maxIndex+1]);
@@ -140,11 +177,11 @@ function evaluation(opArray, numArray) { //calculator main logic
             result = subtract(numArray[maxIndex], numArray[maxIndex+1]);
         }
 
-        let newArr = numArray.splice(maxIndex, 2, result); console.log(newArr); console.log(numArray);
-        let removed = opArray.splice(maxIndex, 1); console.log(removed); console.log(opArray);
+        let newArr = numArray.splice(maxIndex, 2, result); console.log("removed from num array", newArr); console.log("numArray",numArray);
+        let removed = opArray.splice(maxIndex, 1); console.log("removed from opArray", removed); console.log("opArray", opArray);
     }
 
-    console.log(opArray.length);
+    console.log("length of opArray", opArray.length);
     
     return result;
 }
@@ -159,6 +196,7 @@ let finalResult;
 mapDigits();
 mapOperators();
 clear();
-backspace();    
+// divideZero();
+// backspace();    
 
 result();
