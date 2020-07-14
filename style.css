@@ -9,6 +9,10 @@ h1 {
     color: #00203FFF;
 }
 
+#output {
+    padding-left: 10px;
+    tex
+}
 button {
     cursor:pointer;
     background-color: #00203FFF;
@@ -38,10 +42,9 @@ background-color:#2d3557;
     font-style: italic;
     font-size: larger;
     background-color: rgb(102, 125, 182);
-   (0, 0, 0, 0) linear-gradient(to right, rgb(0, 0, 0), rgb(15, 155, 15)) repeat scroll 0% 0%; */
     border-radius: 5px;
     width: 300px;
-    text-align: center;
+    text-align: left;
     margin-left: auto;
     margin-right: auto;
 }
