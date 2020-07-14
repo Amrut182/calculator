@@ -78,7 +78,7 @@ function clear() {
     operatorsArray = [];
     numberArray = [];
 
-    document.getElementById("output").innerText = "____________";
+    document.getElementById("output").innerText = "__";
 }
 
 document.getElementById("clear").onclick = function() {
@@ -108,9 +108,8 @@ function divideZero() {
     console.log("divisionIndex", divisionIndex);
 
     if((zeroIndex - 1) == divisionIndex) {
-        console.log("division by zero");
         clear();
-        alert("Division by zero! please enter again");
+        alert("Division by zero! Please try again");
         return true;
     }
 
