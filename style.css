@@ -38,6 +38,7 @@ background-color:#2d3557;
 
 #container {
     border: 5px solid black;
+    padding: 2px;
     font-style: italic;
     font-size: larger;
     background-color: rgb(102, 125, 182);
